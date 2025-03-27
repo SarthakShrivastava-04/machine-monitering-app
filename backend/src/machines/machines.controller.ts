@@ -10,13 +10,13 @@ export class MachinesController {
     return this.machinesService.getAllMachines();
   }
 
-  @Get(':id')
-  getMachineById(@Param('id') id: string) {
-    return this.machinesService.getMachineById(id);
+  @Get(':machineId')
+  getMachineById(@Param('machineId') machineId: string) {
+    return this.machinesService.getMachineById(machineId);
   }
 
-  @Post(':id/update')
-  updateMachine(@Param('id') id: string, @Body() data) {
-    return this.machinesService.updateMachine(id, data);
+  @Post(':machineId/update')
+  updateMachine(@Param('machineId') machineId: string, @Body() data) {
+    return this.machinesService.updateMachine(machineId, data);
   }
 }

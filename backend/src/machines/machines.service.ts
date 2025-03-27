@@ -9,11 +9,11 @@ export class MachinesService {
     return prisma.machine.findMany();
   }
 
-  async getMachineById(id: string) {
-    return prisma.machine.findUnique({ where: { id } });
+  async getMachineById(machineId: string) {
+    return prisma.machine.findUnique({ where: { machineId } });
   }
 
-  async updateMachine(id: string, data: any) {
-    return prisma.machine.update({ where: { id }, data });
+  async updateMachine(machineId: string, data: any) {
+    return prisma.machine.update({ where: { machineId }, data });
   }
 }

@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('signup')
+  @Post('register')
   async signup(@Body() body) {
     return this.authService.signup(body.username, body.email, body.password);
   }
@@ -22,6 +22,6 @@ export class AuthController {
 
   @Get('check-auth')
   async checkAuth(@Req() req) {
-    return { isAuthenticated: !!req.cookies.token };
+    return { isAuthenticated: !!req.cookies?.token };
   }
 }

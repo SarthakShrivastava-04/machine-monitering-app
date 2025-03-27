@@ -8,17 +8,18 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  username String @unique
-  email    String @unique
-  password String
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  email     String   @unique
+  password  String
   createdAt DateTime @default(now())
 }
 
 model Machine {
-  id               String @id @default(auto()) @map("_id") @db.ObjectId
-  name             String
-  status          String
-  temperature      Int
+  id                String @id @default(auto()) @map("_id") @db.ObjectId
+  machineId         String   @unique
+  name              String
+  status            String
+  temperature       Int
   energyConsumption Int
 }
