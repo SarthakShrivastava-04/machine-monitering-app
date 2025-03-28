@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MachineDash",
-  description: "Industrial Machine Monitoring",
+  title: "MechTrack",
+  description: "Industrial Machine Monitoring System",
 };
 
 export default function RootLayout({
@@ -25,10 +25,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="bg-white">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
+    <html lang="en" className="bg-black">
+      <body className={`${geistSans.variable} ${geistMono.variable} bg-black antialiased flex flex-col min-h-screen text-white`}>
         <Navbar />
-        <main className="flex-1 container mx-auto px-4 py-8">
+        <main className="bg-black lex-1 container mx-auto px-4 py-8">
           {children}
         </main>
         <Footer />

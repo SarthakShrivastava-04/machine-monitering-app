@@ -1,10 +1,9 @@
 "use client";
 import { useAppStore } from "@/lib/store/appStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MachineCard } from "@/components/MachineCard";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 
 export default function DashboardPage() {
   const {
@@ -12,27 +11,46 @@ export default function DashboardPage() {
     machines,
     fetchAllMachines,
     machinesLoading,
-    machinesError,
-    initializeFromStorage
+    machinesError
   } = useAppStore();
-
+  const [isHydrated, setIsHydrated] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    // initializeFromStorage();
+    // Set hydrated when store is ready
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    // Only run after store is hydrated
+    if (!isHydrated) return;
+    
     if (!user) {
       router.push("/login");
       return;
     }
     
-    fetchAllMachines();
-  }, [user, fetchAllMachines, router]);
+    if (machines.length === 0 && !machinesLoading) {
+      fetchAllMachines();
+    }
+  }, [user, machines.length, machinesLoading, router, fetchAllMachines, isHydrated]);
+
+  // Show loading state while store hydrates
+  if (!isHydrated) {
+    return (
+      <div className="container mx-auto py-8">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-pulse text-gray-400">Loading...</div>
+        </div>
+      </div>
+    );
+  }
 
   if (!user) {
     return (
       <div className="container mx-auto py-8">
         <div className="flex justify-center items-center h-64">
-          <div className="text-gray-500">Redirecting to login...</div>
+          <div className="text-gray-400">Redirecting to login...</div>
         </div>
       </div>
     );
@@ -42,7 +60,7 @@ export default function DashboardPage() {
     return (
       <div className="container mx-auto py-8">
         <div className="flex justify-center items-center h-64">
-          <div className="animate-pulse text-gray-500">Loading machines...</div>
+          <div className="animate-pulse text-gray-400">Loading machines...</div>
         </div>
       </div>
     );
@@ -51,12 +69,12 @@ export default function DashboardPage() {
   if (machinesError) {
     return (
       <div className="container mx-auto py-8">
-        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded">
+        <div className="bg-red-900/20 border border-red-800 text-red-400 p-4 rounded">
           {machinesError}
           <Button 
             onClick={fetchAllMachines}
             variant="outline"
-            className="mt-2"
+            className="mt-2 text-white border-gray-700 hover:bg-gray-800"
           >
             Retry
           </Button>
@@ -67,19 +85,12 @@ export default function DashboardPage() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <div className="flex justify-between items-center mb-8">
+      <div className="mb-8">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-            Welcome, {user.username}
-          </h1>
-          <p className="text-gray-600 mt-1">
-            {machines.length} machine{machines.length !== 1 ? 's' : ''} currently registered
+          <p className="text-gray-200 text-2xl md:text-3xl font-bold">
+            {machines.length} machine{machines.length !== 1 ? 's' : ''} registered
           </p>
         </div>
-        <Button onClick={() => router.push("/machines/add")}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Machine
-        </Button>
       </div>
 
       {machines.length > 0 ? (
@@ -89,17 +100,13 @@ export default function DashboardPage() {
           ))}
         </div>
       ) : (
-        <div className="bg-gray-50 rounded-lg p-8 text-center">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <div className="bg-gray-900 rounded-lg p-8 text-center border border-gray-800">
+          <h3 className="text-lg font-medium text-white mb-2">
             No machines found
           </h3>
-          <p className="text-gray-600 mb-4">
-            Get started by adding your first machine
+          <p className="text-gray-400 mb-4">
+            Your machines will appear here once added
           </p>
-          <Button onClick={() => router.push("/machines/add")}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Machine
-          </Button>
         </div>
       )}
     </div>

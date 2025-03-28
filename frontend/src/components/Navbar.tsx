@@ -9,7 +9,7 @@ export default function Navbar() {
   const { user, logout } = useAppStore();
 
   return (
-    <header className="border-b border-gray-200 sticky top-0 bg-white/80 backdrop-blur-sm z-50">
+    <header className="border-b border-gray-700 sticky top-0 bg-gray-900/80 backdrop-blur-sm z-50">
       <div className="container mx-auto px-6 py-3 flex items-center">
         {/* Left: Logo */}
         <motion.div 
@@ -17,8 +17,8 @@ export default function Navbar() {
           className="text-xl font-bold cursor-pointer flex items-center mr-auto"
           onClick={() => router.push('/')}
         >
-          <span className="bg-black text-white px-2 py-1 rounded mr-1">M</span>
-          <span className="hidden sm:inline">ACHINEDASH</span>
+          <span className="bg-white text-black px-2 py-1 rounded mr-1">M</span>
+          <span className="hidden sm:inline text-white">ECHTRACK</span>
         </motion.div>
 
         {/* Center: Navigation */}
@@ -26,7 +26,7 @@ export default function Navbar() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="px-4 py-2 text-sm font-medium rounded-lg transition-all"
+            className="px-4 py-2 text-sm font-medium rounded-lg transition-all text-white hover:bg-gray-800"
             onClick={() => router.push('/')}
           >
             Home
@@ -34,7 +34,7 @@ export default function Navbar() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="px-4 py-2 text-sm font-medium rounded-lg transition-all"
+            className="px-4 py-2 text-sm font-medium rounded-lg transition-all text-white hover:bg-gray-800"
             onClick={() => router.push('/dashboard')}
           >
             Dashboard
@@ -42,25 +42,24 @@ export default function Navbar() {
         </nav>
 
         {/* Right: User Controls */}
-        <div className=" min-w-2/7">
-        {user && (
-          <div className="flex items-center gap-4 ml-auto">
-            <span className="text-sm font-medium text-gray-800">
-              {user.username}
-            </span>
-            <motion.div whileHover={{ scale: 1.05 }}>
-              <Button
-                variant="ghost"
-                className="text-gray-600 hover:text-black hover:bg-gray-100"
-                onClick={logout}
-              >
-                Logout
-              </Button>
-            </motion.div>
-          </div>
-        )}
+        <div className="min-w-1/7 ml-auto">
+          {user && (
+            <div className="flex items-center gap-4 ml-auto">
+              <span className="text-sm font-medium text-gray-300">
+                {user.username}
+              </span>
+              <motion.div whileHover={{ scale: 1.05 }}>
+                <Button
+                  variant="ghost"
+                  className="text-gray-900 bg-gray-200 hover:text-gray-950 hover:bg-gray-300"
+                  onClick={logout}
+                >
+                  Logout
+                </Button>
+              </motion.div>
+            </div>
+          )}
         </div>
-      
       </div>
     </header>
   );

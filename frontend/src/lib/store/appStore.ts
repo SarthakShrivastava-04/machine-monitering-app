@@ -1,5 +1,6 @@
 // /lib/store/appStore.ts
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { api } from '@/lib/api';
 import { AxiosError } from 'axios';
 
@@ -32,12 +33,11 @@ type AppState = {
   selectedMachine: Machine | null;
   machinesLoading: boolean;
   machinesError: string | null;
-  initializeFromStorage: () => void;
   
   // Auth Actions
   login: (email: string, password: string) => Promise<void>;
   signup: (username: string, email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
+  logout: () => void;
 
   // Machine Actions
   fetchAllMachines: () => Promise<void>;
@@ -45,131 +45,128 @@ type AppState = {
   updateMachine: (id: string, updates: Partial<Machine>) => Promise<void>;
 };
 
-export const useAppStore = create<AppState>((set, get) => ({
-  // Initial State
-  user: null,
-  token: null,
-  authLoading: false,
-  authError: null,
-  machines: [],
-  selectedMachine: null,
-  machinesLoading: false,
-  machinesError: null,
-  
-  initializeFromStorage: () => {
-    const user = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
-    set({
-      user: user ? JSON.parse(user) : null,
-      token: token || null
-    });
-  },
+export const useAppStore = create<AppState>()(
+  persist(
+    (set, get) => ({
+      // Initial State
+      user: null,
+      token: null,
+      authLoading: false,
+      authError: null,
+      machines: [],
+      selectedMachine: null,
+      machinesLoading: false,
+      machinesError: null,
 
-  // Auth Actions (remain unchanged)
-  login: async (email, password) => {
-    set({ authLoading: true, authError: null });
-    try {
-      const { data } = await api.post<{ userInfo: User; token: string }>('/auth/login', { email, password });
-      set({ 
-        user: data.userInfo,
-        token: data.token,
-        authError: null
-      });
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.userInfo));
-    } catch (error) {
-      const err = error as AxiosError<{ message?: string }>;
-      set({ 
-        authError: err.response?.data?.message || err.message || 'Login failed' 
-      });
-      throw error;
-    } finally {
-      set({ authLoading: false });
-    }
-  },
+      // Auth Actions
+      login: async (email, password) => {
+        set({ authLoading: true, authError: null });
+        try {
+          const { data } = await api.post<{ userInfo: User; token: string }>('/auth/login', { email, password });
+          set({ 
+            user: data.userInfo,
+            token: data.token,
+            authError: null
+          });
+        } catch (error) {
+          const err = error as AxiosError<{ message?: string }>;
+          set({ 
+            authError: err.response?.data?.message || err.message || 'Login failed' 
+          });
+          throw error;
+        } finally {
+          set({ authLoading: false });
+        }
+      },
 
-  signup: async (username, email, password) => {
-    set({ authLoading: true, authError: null });
-    try {
-      await api.post('/auth/signup', { username, email, password });
-    } catch (error) {
-      const err = error as AxiosError<{ message?: string }>;
-      set({ 
-        authError: err.response?.data?.message || err.message || 'Registration failed' 
-      });
-      throw error;
-    } finally {
-      set({ authLoading: false });
-    }
-  },
+      signup: async (username, email, password) => {
+        set({ authLoading: true, authError: null });
+        try {
+          await api.post('/auth/signup', { username, email, password });
+        } catch (error) {
+          const err = error as AxiosError<{ message?: string }>;
+          set({ 
+            authError: err.response?.data?.message || err.message || 'Registration failed' 
+          });
+          throw error;
+        } finally {
+          set({ authLoading: false });
+        }
+      },
 
-  logout: async () => {
-    try {
-      await api.post('/auth/logout');
-    } catch (error) {
-      console.error('Logout API error:', error);
-    } finally {
-      localStorage.removeItem('token');
-      set({ 
-        user: null, 
-        token: null,
-        machines: [],
-        selectedMachine: null 
-      });
-    }
-  },
+      logout: () => {
+        set({ 
+          user: null, 
+          token: null,
+          machines: [],
+          selectedMachine: null 
+        });
+      },
 
-  // Machine Actions
-  fetchAllMachines: async () => {
-    set({ machinesLoading: true, machinesError: null });
-    try {
-      const { data } = await api.get<Machine[]>('/machines');
-      set({ machines: data, machinesError: null });
-    } catch (error) {
-      const err = error as AxiosError<{ message?: string }>;
-      set({ 
-        machinesError: err.response?.data?.message || err.message || 'Failed to fetch machines' 
-      });
-    } finally {
-      set({ machinesLoading: false });
-    }
-  },
+      // Machine Actions
+      fetchAllMachines: async () => {
+        if (get().machinesLoading) return;
+        
+        set({ machinesLoading: true, machinesError: null });
+        try {
+          const { data } = await api.get<Machine[]>('/machines');
+          set({ machines: data, machinesError: null });
+        } catch (error) {
+          const err = error as AxiosError<{ message?: string }>;
+          set({ 
+            machinesError: err.response?.data?.message || err.message || 'Failed to fetch machines' 
+          });
+        } finally {
+          set({ machinesLoading: false });
+        }
+      },
 
-  fetchMachineById: async (id) => {
-    set({ machinesLoading: true, machinesError: null });
-    try {
-      const { data } = await api.get<Machine>(`/machines/${id}`);
-      set({ selectedMachine: data, machinesError: null });
-    } catch (error) {
-      const err = error as AxiosError<{ message?: string }>;
-      set({ 
-        machinesError: err.response?.data?.message || err.message || 'Machine not found' 
-      });
-    } finally {
-      set({ machinesLoading: false });
-    }
-  },
+      fetchMachineById: async (id) => {
+        if (get().machinesLoading) return;
+        
+        set({ machinesLoading: true, machinesError: null });
+        try {
+          const { data } = await api.get<Machine>(`/machines/${id}`);
+          set({ selectedMachine: data, machinesError: null });
+        } catch (error) {
+          const err = error as AxiosError<{ message?: string }>;
+          set({ 
+            machinesError: err.response?.data?.message || err.message || 'Machine not found' 
+          });
+        } finally {
+          set({ machinesLoading: false });
+        }
+      },
 
-  updateMachine: async (id, updates) => {
-    set({ machinesLoading: true, machinesError: null });
-    console.log("nff")
-    try {
-      const { data } = await api.post<Machine>(`/machines/${id}`, updates);
-      set(state => ({
-        machines: state.machines.map(m => 
-          m.id === id ? { ...m, ...data } : m
-        ),
-        selectedMachine: data,
-        machinesError: null
-      }));
-    } catch (error) {
-      const err = error as AxiosError<{ message?: string }>;
-      set({ 
-        machinesError: err.response?.data?.message || err.message || 'Failed to update machine' 
-      });
-      throw error;
-    } finally {
-      set({ machinesLoading: false });
+      updateMachine: async (id, updates) => {
+        set({ machinesLoading: true, machinesError: null });
+        try {
+          const { data } = await api.post<Machine>(`/machines/${id}`, updates);
+          set(state => ({
+            machines: state.machines.map(m => 
+              m.id === id ? { ...m, ...data } : m
+            ),
+            selectedMachine: data,
+            machinesError: null
+          }));
+        } catch (error) {
+          const err = error as AxiosError<{ message?: string }>;
+          set({ 
+            machinesError: err.response?.data?.message || err.message || 'Failed to update machine' 
+          });
+          throw error;
+        } finally {
+          set({ machinesLoading: false });
+        }
+      }
+    }),
+    {
+      name: 'mechtrack-store', // localStorage key
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ 
+        user: state.user,
+        token: state.token
+      }), // only persist auth-related state
     }
-  }
-}));
+  )
+);
