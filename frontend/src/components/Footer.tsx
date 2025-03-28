@@ -17,8 +17,9 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center gap-6 mb-4 md:mb-0">
             <Link 
-              href="/docs" 
+              href={"https://github.com/SarthakShrivastava-04/machine-monitering-app/blob/main/README.md"} 
               className="text-sm text-gray-400 hover:text-white transition-colors"
+              target="_blank"
             >
               Documentation
             </Link>

@@ -25,8 +25,8 @@ export function MachineCard({ machine }: MachineCardProps) {
     Error: 'bg-red-900/20 text-red-400 border-red-800'
   };
 
-  const temperatureStatus = machine.temperature > 85 ? 'text-red-400' : 'text-gray-300';
-  const energyStatus = machine.energyConsumption > 450 ? 'text-yellow-400' : 'text-gray-300';
+  const temperatureStatus = machine.temperature >= 80 ? 'text-red-400' : 'text-gray-300';
+  const energyStatus = machine.energyConsumption >= 400 ? 'text-yellow-400' : 'text-gray-300';
 
   return (
     <motion.div 
