@@ -9,8 +9,9 @@ MechTrack is a modern dashboard for monitoring industrial machinery. Track equip
 ▸ Next.js   
 ▸ TypeScript  
 ▸ Tailwind CSS  
+▸ Zustand
 ▸ shadcn-ui
-▸ Zustand 
+
 
 **Backend**  
 ▸ NestJS  
