@@ -46,13 +46,14 @@ export class AuthService {
         throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
       }
 
-      const { password: storedPassword, ...userInfo } = user;
+      const { password: storedPassword, createdAt, ...userInfo } = user;
       
       // Generate JWT token
       const token = this.jwtService.sign({ userId: user.id }, { 
         secret: process.env.JWT_SECRET, 
         expiresIn: '10d',
       });
+
   
       // Set token in HTTP-only cookie
       res.cookie('token', token, {
@@ -62,7 +63,7 @@ export class AuthService {
       });
   
       // Send response
-      return res.status(200).json({ message: 'Login successful', userInfo });
+      return res.status(200).json({ userInfo, token });
   
     } catch (error) {
       return res.status(error?.status || 500).json({ message: error?.message || "Login failed" });
