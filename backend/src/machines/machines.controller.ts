@@ -15,7 +15,7 @@ export class MachinesController {
     return this.machinesService.getMachineById(machineId);
   }
 
-  @Post(':machineId/update')
+  @Post(':machineId')
   updateMachine(@Param('machineId') machineId: string, @Body() data) {
     return this.machinesService.updateMachine(machineId, data);
   }

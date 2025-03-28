@@ -78,7 +78,7 @@ export function MachineCard({ machine }: MachineCardProps) {
             variant="outline"
             size="sm"
             className="flex items-center gap-1"
-            onClick={() => router.push(`/machines/${machine.id}`)}
+            onClick={() => router.push(`/machines/${machine.machineId}`)}
           >
             <Power className="h-4 w-4" />
             Details

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, BarChart2, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Toaster } from "@/components/ui/sonner"
 
 export default function LandingPage() {
   return (
@@ -100,6 +101,7 @@ export default function LandingPage() {
             </motion.div>
           </motion.div>
         </div>
+        <Toaster/>
 
         {/* Scroll Indicator */}
         <motion.div

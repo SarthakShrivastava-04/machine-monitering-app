@@ -33,6 +33,7 @@ type AppState = {
   machinesLoading: boolean;
   machinesError: string | null;
   initializeFromStorage: () => void;
+  
   // Auth Actions
   login: (email: string, password: string) => Promise<void>;
   signup: (username: string, email: string, password: string) => Promise<void>;
@@ -41,11 +42,7 @@ type AppState = {
   // Machine Actions
   fetchAllMachines: () => Promise<void>;
   fetchMachineById: (id: string) => Promise<void>;
-  updateMachineStatus: (id: string, status: MachineStatus) => Promise<void>;
-  updateMachineMetrics: (
-    id: string, 
-    updates: Partial<Pick<Machine, 'temperature' | 'energyConsumption'>>
-  ) => Promise<void>;
+  updateMachine: (id: string, updates: Partial<Machine>) => Promise<void>;
 };
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -60,17 +57,15 @@ export const useAppStore = create<AppState>((set, get) => ({
   machinesError: null,
   
   initializeFromStorage: () => {
-   
-      const user = localStorage.getItem('user');
-      const token = localStorage.getItem('token');
-      set({
-        user: user ? JSON.parse(user) : null,
-        token: token || null
-      });
-    
+    const user = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    set({
+      user: user ? JSON.parse(user) : null,
+      token: token || null
+    });
   },
 
-  // Auth Actions
+  // Auth Actions (remain unchanged)
   login: async (email, password) => {
     set({ authLoading: true, authError: null });
     try {
@@ -155,32 +150,11 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
   },
 
-  updateMachineStatus: async (id, status) => {
+  updateMachine: async (id, updates) => {
     set({ machinesLoading: true, machinesError: null });
+    console.log("nff")
     try {
-      const { data } = await api.patch<Machine>(`/machines/${id}`, { status });
-      set(state => ({
-        machines: state.machines.map(m => 
-          m.id === id ? { ...m, status: data.status } : m
-        ),
-        selectedMachine: data,
-        machinesError: null
-      }));
-    } catch (error) {
-      const err = error as AxiosError<{ message?: string }>;
-      set({ 
-        machinesError: err.response?.data?.message || err.message || 'Failed to update status' 
-      });
-      throw error;
-    } finally {
-      set({ machinesLoading: false });
-    }
-  },
-
-  updateMachineMetrics: async (id, updates) => {
-    set({ machinesLoading: true, machinesError: null });
-    try {
-      const { data } = await api.patch<Machine>(`/machines/${id}`, updates);
+      const { data } = await api.post<Machine>(`/machines/${id}`, updates);
       set(state => ({
         machines: state.machines.map(m => 
           m.id === id ? { ...m, ...data } : m
@@ -191,7 +165,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     } catch (error) {
       const err = error as AxiosError<{ message?: string }>;
       set({ 
-        machinesError: err.response?.data?.message || err.message || 'Failed to update metrics' 
+        machinesError: err.response?.data?.message || err.message || 'Failed to update machine' 
       });
       throw error;
     } finally {
