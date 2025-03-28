@@ -70,7 +70,7 @@ export default function LandingPage() {
                 <Button 
                   variant="outline" 
                   size="lg" 
-                  className="border-gray-400 text-white hover:bg-gray-900 px-8 gap-2"
+                  className="bg-white text-black hover:bg-gray-200 px-8 gap-2"
                   asChild
                 >
                   <Link href="/login">
