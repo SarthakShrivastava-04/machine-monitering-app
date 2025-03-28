@@ -6,17 +6,11 @@ MechTrack is a modern dashboard for monitoring industrial machinery. Track equip
 ## 🚀 Tech Stack
 
 **Frontend**  
-▸ Next.js   
-▸ TypeScript   
-▸ Zustand
-▸ Tailwind CSS
-▸ Shadcn ui
-
+▸ Next.js, Tailwind CSS, Zustand, Shadcn ui, Typescript
 
 **Backend**  
-▸ NestJS  
-▸ MongoDB (with Prisma)  
-▸ JWT Authentication
+▸ NestJS, Typescript, MongoDB (with Prisma), JWT Authentication
+
 
 
 ## 🛠️ Setup Guide
