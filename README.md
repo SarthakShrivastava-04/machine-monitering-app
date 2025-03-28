@@ -18,6 +18,29 @@ MechTrack is a modern dashboard for monitoring industrial machinery. Track equip
 ▸ JWT Authentication
 
 
+
+### Frontend Routes
+| Route | Description |
+|-------|-------------|
+| `/` | Landing page |
+| `/login` | User authentication |
+| `/signup` | User registration |
+| `/dashboard` | Main dashboard view |
+| `/machines` | Machine list view |
+| `/machines/[id]` | Machine details page |
+
+
+### Backend API Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST   | `/api/auth/login` | User login |
+| POST   | `/api/auth/signup` | User registration |
+| GET    | `/api/machines` | List all machines |
+| GET    | `/api/machines/:id` | Get machine details |
+| POST  | `/api/machines/:id` | Update machine |
+
+
+
 ## 🛠️ Setup Guide
 
 ### Prerequisites
@@ -77,4 +100,3 @@ npm run start:dev
 cd ../frontend
 npm run dev
 ```
-
