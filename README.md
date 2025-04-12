@@ -42,7 +42,6 @@ MechTrack is a modern dashboard for monitoring industrial machinery. Track equip
 | `/login` | User authentication |
 | `/signup` | User registration |
 | `/dashboard` | Main dashboard view |
-| `/machines` | Machine list view |
 | `/machines/[id]` | Machine details page |
 
 

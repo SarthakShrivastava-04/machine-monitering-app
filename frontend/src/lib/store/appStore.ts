@@ -82,7 +82,7 @@ export const useAppStore = create<AppState>()(
       signup: async (username, email, password) => {
         set({ authLoading: true, authError: null });
         try {
-          await api.post('/auth/signup', { username, email, password });
+          await api.post('/auth/register', { username, email, password });
         } catch (error) {
           const err = error as AxiosError<{ message?: string }>;
           set({ 
